@@ -15,6 +15,17 @@ struct BoardSquare
     };
 };
 
+struct WinningPlayer
+{
+    enum E
+    {
+        X,
+        O,
+        stalemate, 
+        None
+    };
+};
+
 class Board
 {
     private:
@@ -55,7 +66,7 @@ class IRuleEngine
     // This is an interface
     public:
         // Dynamic Polymorphism - its an abstract method since its a pure virtual function
-        virtual BoardSquare::E HasWon(Board& board) = 0;
+        virtual WinningPlayer::E GetWinningPlayer(Board& board) = 0;
 };
 
 class Game
@@ -66,11 +77,12 @@ class Game
     public:
         Game(Board& board, IRuleEngine& ruleEngine) : _board(board), _ruleEngine(ruleEngine) {}
 
-        BoardSquare::E Run() 
+        WinningPlayer::E Run() 
         {
-            BoardSquare::E winningPlayer, currentPlayer = BoardSquare::E::X;
+            WinningPlayer::E winningPlayer;
+            BoardSquare::E currentPlayer = BoardSquare::E::X;
             // While no one has won
-            while((winningPlayer = _ruleEngine.HasWon(_board)) == BoardSquare::E::Empty)
+            while((winningPlayer = _ruleEngine.GetWinningPlayer(_board)) == WinningPlayer::E::None)
             {
                 Render();
                 cout << "\n";

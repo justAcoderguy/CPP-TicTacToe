@@ -140,6 +140,21 @@ class Game
         }
 };
 
+class NullRuleEngine : public IRuleEngine
+{
+    public:
+        virtual WinningPlayer::E GetWinningPlayer(Board& Board)
+        {
+            return WinningPlayer::E::None;
+        }
+};
+
 int main(){
+    Board board(3);
+    NullRuleEngine ruleEngine;
+
+    Game game(board, ruleEngine);
+    game.Run();
+
     return 0;
 }

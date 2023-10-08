@@ -154,7 +154,15 @@ int main(){
     NullRuleEngine ruleEngine;
 
     Game game(board, ruleEngine);
-    game.Run();
+    WinningPlayer::E winner = game.Run();
+
+    switch (winner)
+    {
+        case WinningPlayer::stalemate: cout << "Its a tie!";
+        case WinningPlayer::O: cout << "Congratulations player O, you have won!";
+        case WinningPlayer::X: cout << "Congratulations player X, you have won!";
+        default: cout << "Something unexpected happened. Sorry";
+    }
 
     return 0;
 }

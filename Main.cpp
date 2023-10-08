@@ -123,8 +123,8 @@ class Game
         {
             switch (player)
             {
-                case BoardSquare::E::X: return 'X';
-                case BoardSquare::E::O: return 'O';
+                case BoardSquare::E::X: return 'X'; break;
+                case BoardSquare::E::O: return 'O'; break;
             }
         }
 
@@ -132,8 +132,8 @@ class Game
         {
             switch(square)
             {
-                case BoardSquare::E::X: return 'X';
-                case BoardSquare::E::O: return 'O';
+                case BoardSquare::E::X: return 'X'; break;
+                case BoardSquare::E::O: return 'O'; break;
             }
 
             return index + '0';
@@ -145,6 +145,18 @@ class NullRuleEngine : public IRuleEngine
     public:
         virtual WinningPlayer::E GetWinningPlayer(Board& Board)
         {
+            bool foundEmpty = false;
+            for (auto i = 0; i < Board.GetTotalSquares(); i++)
+            {
+                if (Board.GetSquare(i) == BoardSquare::E::Empty)
+                {
+                    foundEmpty = true;
+                    break;
+                }
+            }
+            if (!foundEmpty)
+                return WinningPlayer::E::stalemate;
+
             return WinningPlayer::E::None;
         }
 };
@@ -158,10 +170,10 @@ int main(){
 
     switch (winner)
     {
-        case WinningPlayer::stalemate: cout << "Its a tie!";
-        case WinningPlayer::O: cout << "Congratulations player O, you have won!";
-        case WinningPlayer::X: cout << "Congratulations player X, you have won!";
-        default: cout << "Something unexpected happened. Sorry";
+        case WinningPlayer::stalemate: cout << "Its a tie!\n"; break;
+        case WinningPlayer::O: cout << "Congratulations player O, you have won!\n"; break;
+        case WinningPlayer::X: cout << "Congratulations player X, you have won!\n"; break;
+        default: cout << "Something unexpected happened. Sorry\n";
     }
 
     return 0;

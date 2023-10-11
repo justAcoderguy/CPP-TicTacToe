@@ -174,6 +174,31 @@ class NullRuleEngine : public IRuleEngine
                 if (winningPlayer != WinningPlayer::E::None)
                     return winningPlayer;
             }
+
+            // Checking for wins vertically
+            for (auto y = 0; y < Board.Getwidth(); y++)
+            {
+                BoardSquare::E typeOfSquare;
+
+                int firstIndex = GetIndexForXY(0, y, Board.Getwidth());
+                typeOfSquare = Board.GetSquare(firstIndex);
+                if (typeOfSquare == BoardSquare::E::Empty)
+                    continue;
+
+                WinningPlayer::E winningPlayer = typeOfSquare == BoardSquare::E::X ? WinningPlayer::E::X : WinningPlayer::E::O;
+
+                for (auto x = 1; x < Board.Getwidth(); x++)
+                {
+                    if (typeOfSquare != Board.GetSquare(GetIndexForXY(x, y, Board.Getwidth())))
+                    {
+                        winningPlayer = WinningPlayer::E::None;
+                        break;
+                    }
+                } 
+
+                if (winningPlayer != WinningPlayer::E::None)
+                    return winningPlayer;
+            }
             
             // Checking if all boxes are filled and no winner was found
             bool foundEmpty = false;

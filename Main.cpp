@@ -199,7 +199,49 @@ class NullRuleEngine : public IRuleEngine
                 if (winningPlayer != WinningPlayer::E::None)
                     return winningPlayer;
             }
-            
+
+            // Checking for wins diagonally (top-left to bottom-right)
+            BoardSquare::E topLeftDiagonalType = Board.GetSquare(GetIndexForXY(0, 0, Board.Getwidth()));
+
+            if (topLeftDiagonalType != BoardSquare::E::Empty) 
+            {
+                WinningPlayer::E diagonalWinningPlayer = (topLeftDiagonalType == BoardSquare::E::X) ? WinningPlayer::E::X : WinningPlayer::E::O;
+
+                for (auto i = 1; i < Board.Getwidth(); i++) 
+                {
+                    if (topLeftDiagonalType != Board.GetSquare(GetIndexForXY(i, i, Board.Getwidth()))) {
+                        diagonalWinningPlayer = WinningPlayer::E::None;
+                        break;
+                    }
+                }
+                if (diagonalWinningPlayer != WinningPlayer::E::None) 
+                {
+                    return diagonalWinningPlayer;
+                }
+            }
+
+            // Checking for wins diagonally (top-right to bottom-left)
+            // Code checks from bottom-left to top-right
+            BoardSquare::E topRightDiagonalType = Board.GetSquare(GetIndexForXY(Board.Getwidth() - 1, 0, Board.Getwidth()));
+
+            if (topRightDiagonalType != BoardSquare::E::Empty) 
+            {
+                WinningPlayer::E diagonalWinningPlayer = (topRightDiagonalType == BoardSquare::E::X) ? WinningPlayer::E::X : WinningPlayer::E::O;
+
+                for (auto i = 1; i < Board.Getwidth(); i++) 
+                {
+                    if (topRightDiagonalType != Board.GetSquare(GetIndexForXY(Board.Getwidth() - 1 - i, i, Board.Getwidth()))) // 1, 1   0,2
+                    {
+                        diagonalWinningPlayer = WinningPlayer::E::None;
+                        break;
+                    }
+                }
+                if (diagonalWinningPlayer != WinningPlayer::E::None) 
+                {
+                    return diagonalWinningPlayer;
+                }
+            }
+
             // Checking if all boxes are filled and no winner was found
             bool foundEmpty = false;
             for (auto i = 0; i < Board.GetTotalSquares(); i++)

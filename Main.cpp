@@ -142,9 +142,40 @@ class Game
 
 class NullRuleEngine : public IRuleEngine
 {
+    int GetIndexForXY(int x, int y, int width)
+    {
+        return width * x + y;
+    }
+
     public:
         virtual WinningPlayer::E GetWinningPlayer(Board& Board)
         {
+            // Checking for wins horizontally
+            for (auto x = 0; x < Board.Getwidth(); x++)
+            {
+                BoardSquare::E typeOfSquare;
+
+                int firstIndex = GetIndexForXY(x, 0, Board.Getwidth());
+                typeOfSquare = Board.GetSquare(firstIndex);
+                if (typeOfSquare == BoardSquare::E::Empty)
+                    continue;
+
+                WinningPlayer::E winningPlayer = typeOfSquare == BoardSquare::E::X ? WinningPlayer::E::X : WinningPlayer::E::O;
+
+                for (auto y = 1; y < Board.Getwidth(); y++)
+                {
+                    if (typeOfSquare != Board.GetSquare(GetIndexForXY(x, y, Board.Getwidth())))
+                    {
+                        winningPlayer = WinningPlayer::E::None;
+                        break;
+                    }
+                } 
+
+                if (winningPlayer != WinningPlayer::E::None)
+                    return winningPlayer;
+            }
+            
+            // Checking if all boxes are filled and no winner was found
             bool foundEmpty = false;
             for (auto i = 0; i < Board.GetTotalSquares(); i++)
             {
@@ -155,7 +186,7 @@ class NullRuleEngine : public IRuleEngine
                 }
             }
             if (!foundEmpty)
-                return WinningPlayer::E::stalemate;
+                return WinningPlayer::E::stalemate;    
 
             return WinningPlayer::E::None;
         }
